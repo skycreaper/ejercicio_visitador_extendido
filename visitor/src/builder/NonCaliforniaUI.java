@@ -1,19 +1,19 @@
+package builder;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class ColombianUI extends OrderBuilder {
-    private JTextField txtOrderAmnt, txtTaxColombia;
-    private JLabel lblOrderAmnt, lblTaxColombia;
-
+public class NonCaliforniaUI extends OrderBuilder {
+    private JTextField txtOrderAmnt, txtTaxNonCali;
+    private JLabel lblOrderAmnt, lblTaxNonCali;
 
     @Override
     public void addUIComponent() {
         orderUI = new JPanel();
         lblOrderAmnt = new JLabel("Order Amount:");
-        lblTaxColombia = new JLabel("Additional Colombian Tax :");
+        lblTaxNonCali = new JLabel("Additional Non Californian Tax :");
         txtOrderAmnt = new JTextField(10);
-        txtTaxColombia = new JTextField(10);
-
+        txtTaxNonCali = new JTextField(10);
 
         GridBagLayout gridbag = new GridBagLayout();
         orderUI.setLayout(gridbag);
@@ -21,8 +21,8 @@ public class ColombianUI extends OrderBuilder {
         gbc.anchor = GridBagConstraints.WEST;
         orderUI.add(lblOrderAmnt);
         orderUI.add(txtOrderAmnt);
-        orderUI.add(lblTaxColombia);
-        orderUI.add(txtTaxColombia);
+        orderUI.add(lblTaxNonCali);
+        orderUI.add(txtTaxNonCali);
 
         gbc.insets.top = 5;
         gbc.insets.bottom = 5;
@@ -34,7 +34,7 @@ public class ColombianUI extends OrderBuilder {
         gridbag.setConstraints(lblOrderAmnt, gbc);
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gridbag.setConstraints(lblTaxColombia, gbc);
+        gridbag.setConstraints(lblTaxNonCali, gbc);
 
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridx = 1;
@@ -42,14 +42,18 @@ public class ColombianUI extends OrderBuilder {
         gridbag.setConstraints(txtOrderAmnt, gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gridbag.setConstraints(txtTaxColombia, gbc);
+        gridbag.setConstraints(txtTaxNonCali, gbc);
+
     }
 
     @Override
     public String getOrderAmount() {
         return txtOrderAmnt.getText();
     }
+
+    @Override
     public String getTax() {
-        return txtTaxColombia.getText();
+        return txtTaxNonCali.getText();
     }
+
 }

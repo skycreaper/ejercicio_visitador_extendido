@@ -1,6 +1,17 @@
+package main;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
+import builder.CaliforniaUI;
+import builder.ColombianUI;
+import builder.DirectorUI;
+import builder.NonCaliforniaUI;
+import builder.OrderBuilder;
+import builder.OverseasUI;
+import orders.*;
+import visitor.OrderVisitor;
 
 public class OrderManager extends JFrame {
   public static final String newline = "\n";

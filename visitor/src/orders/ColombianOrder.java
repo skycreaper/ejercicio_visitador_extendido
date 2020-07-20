@@ -1,3 +1,7 @@
+package orders;
+
+import visitor.OrderVisitor;
+
 public class ColombianOrder implements Order {
     private double orderAmount;
     private double additionalSH;

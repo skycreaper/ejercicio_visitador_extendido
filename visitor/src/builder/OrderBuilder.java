@@ -1,3 +1,5 @@
+package builder;
+
 import javax.swing.*;
 
 public abstract class OrderBuilder {

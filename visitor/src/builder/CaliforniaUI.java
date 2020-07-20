@@ -1,3 +1,5 @@
+package builder;
+
 import javax.swing.*;
 import java.awt.*;
 

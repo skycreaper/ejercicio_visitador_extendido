@@ -1,3 +1,7 @@
+package orders;
+
+import visitor.OrderVisitor;
+
 public class NonCaliforniaOrder implements Order {
   private double orderAmount;
 

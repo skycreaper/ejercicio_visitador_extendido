@@ -1,3 +1,7 @@
+package orders;
+
+import visitor.OrderVisitor;
+
 public class CaliforniaOrder implements Order {
   private double orderAmount;
   private double additionalTax;

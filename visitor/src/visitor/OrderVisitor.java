@@ -1,6 +1,13 @@
-import java.util.*;
+package visitor;
 
-class OrderVisitor implements VisitorInterface {
+import java.util.Vector;
+
+import orders.CaliforniaOrder;
+import orders.ColombianOrder;
+import orders.NonCaliforniaOrder;
+import orders.OverseasOrder;
+
+public class OrderVisitor implements VisitorInterface {
   private Vector orderObjList;
   private double orderTotal;
 
