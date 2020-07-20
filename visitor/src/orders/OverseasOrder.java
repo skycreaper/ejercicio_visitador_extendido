@@ -2,19 +2,25 @@ package orders;
 
 import visitor.OrderVisitor;
 
-public class OverseasOrder implements Order {
+public class OverseasOrder implements Order, OrderComponent {
+
+  private int id;
   private double orderAmount;
   private double additionalSH;
 
   public OverseasOrder() { }
 
-  public OverseasOrder(double inp_orderAmount, double inp_additionalSH) {
+  public OverseasOrder(int id, double inp_orderAmount, double inp_additionalSH) {
+    this.id = id;
     orderAmount = inp_orderAmount;
     additionalSH = inp_additionalSH;
   }
 
-  public double getOrderAmount() {
+  public int getId() {
+    return this.id;
+  }
 
+  public double getOrderAmount() {
     return orderAmount;
   }
 
@@ -24,5 +30,10 @@ public class OverseasOrder implements Order {
 
   public void accept(OrderVisitor v) {
     v.visit(this);
+  }
+
+  @Override
+  public double getOrderTotal() {
+    return this.orderAmount + this.additionalSH;
   }
 }

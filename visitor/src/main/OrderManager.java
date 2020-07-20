@@ -169,6 +169,7 @@ public class OrderManager extends JFrame {
   public JComboBox getOrderTypeCtrl() {
     return cmbOrderType;
   }
+  
   public String getOrderType() {
     return (String) cmbOrderType.getSelectedItem();
   }
@@ -184,15 +185,18 @@ public class OrderManager extends JFrame {
 } // End of class OrderManager
 
 class ButtonHandler implements ActionListener {
+
   OrderManager objOrderManager;
   OrderBuilder builderBH;
+  int id = 0;
+
   public void actionPerformed(ActionEvent e) {
     String totalResult = null;
 
     if (e.getActionCommand().equals(OrderManager.EXIT)) {
       System.exit(1);
     }
-    // Se Agrega metodo para el JComboBox
+    // Construye la interfaz correspondiente de acuerdo al tipo de orden
     if (e.getSource() == objOrderManager.getOrderTypeCtrl()) {
       String selection = objOrderManager.getOrderType();
       if (selection.equals("") == false) {
@@ -211,6 +215,8 @@ class ButtonHandler implements ActionListener {
         JOptionPane.showMessageDialog(objOrderManager, "Por favor seleccione un tipo de orden", "ERROR!", JOptionPane.WARNING_MESSAGE);
       }
     }
+
+    // Crea un tipo de orden
     if (e.getActionCommand().equals(OrderManager.CREATE_ORDER)) {
       //get input values
       String orderType = objOrderManager.getOrderType();
@@ -235,7 +241,7 @@ class ButtonHandler implements ActionListener {
 
       //Create the order
       Order order = createOrder(orderType, dblOrderAmount, dblTax);
-
+      System.out.println("ordertype: "+orderType);
       //Get the Visitor
       OrderVisitor visitor = objOrderManager.getOrderVisitor();
 
@@ -245,6 +251,7 @@ class ButtonHandler implements ActionListener {
       objOrderManager.setTotalValue(" Order Created Successfully");
     }
 
+    // Obtiene el total de ordenes
     if (e.getActionCommand().equals(OrderManager.GET_TOTAL)) {
       //Get the Visitor
       OrderVisitor visitor = objOrderManager.getOrderVisitor();
@@ -256,20 +263,21 @@ class ButtonHandler implements ActionListener {
   }
 
   public Order createOrder(String orderType, double orderAmount, double tax) {
-
+    Order newOrder = null;
     if (orderType.equalsIgnoreCase(OrderManager.CA_ORDER)) {
-      return new CaliforniaOrder(orderAmount, tax);
+      newOrder = new CaliforniaOrder(id, orderAmount, tax);
     }
     if (orderType.equalsIgnoreCase(OrderManager.NON_CA_ORDER)) {
-      return new NonCaliforniaOrder(orderAmount);
+      newOrder = new NonCaliforniaOrder(id, orderAmount);
     }
     if (orderType.equalsIgnoreCase(OrderManager.OVERSEAS_ORDER)) {
-      return new OverseasOrder(orderAmount, tax);
+      newOrder = new OverseasOrder(id, orderAmount, tax);
     }
     if (orderType.equalsIgnoreCase(OrderManager.COLOMBIAN_ORDER)) {
-      return new ColombianOrder(orderAmount, tax);
+      newOrder = new ColombianOrder(id, orderAmount, tax);
     }
-    return null;
+    id++;
+    return newOrder;
   }
 
   public ButtonHandler() { }

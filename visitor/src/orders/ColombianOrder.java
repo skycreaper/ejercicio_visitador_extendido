@@ -2,13 +2,20 @@ package orders;
 
 import visitor.OrderVisitor;
 
-public class ColombianOrder implements Order {
+public class ColombianOrder implements Order, OrderComponent {
+
+    private int id;
     private double orderAmount;
     private double additionalSH;
 
-    public ColombianOrder(double inp_orderAmount, double inp_additionalSH) {
+    public ColombianOrder(int id, double inp_orderAmount, double inp_additionalSH) {
+        this.id = id;
         orderAmount = inp_orderAmount;
         additionalSH = inp_additionalSH;
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     @Override
@@ -22,5 +29,10 @@ public class ColombianOrder implements Order {
 
     public double getAdditionalSH() {
         return additionalSH;
+    }
+
+    @Override
+    public double getOrderTotal() {
+        return this.orderAmount + this.additionalSH + (this.orderAmount * 0.19);
     }
 }
