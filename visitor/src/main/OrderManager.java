@@ -26,7 +26,6 @@ public class OrderManager extends JFrame {
   public static final String GET_TOTAL = "Get Total";
   public static final String CREATE_ORDER = "Create Order";
   public static final String EXIT = "Exit";
-  public static final String UPDATE = "Update";
 
   /*
   public static final String CA_ORDER = "California Order";
@@ -42,10 +41,8 @@ public class OrderManager extends JFrame {
   private JPanel orderPanel;
   private JPanel allOrdersPanel;
   private OrderVisitor objVisitor;
-  private OrderBuilder objOB;
   private JLabel lblTotal, lblTotalValue, lblOrderCreated, lblHistoryTitle;
   private JTable historyTable;
-  JButton updtButton;
   private int orderId;
 
   public OrderManager() {
@@ -65,14 +62,6 @@ public class OrderManager extends JFrame {
     cmbOrderType.addItem(OrderTypes.OVERSEAS_ORDER);
     cmbOrderType.addItem(OrderTypes.COLOMBIAN_ORDER);
 
-    // Create the type of instance of OrderBuilder
-    /*
-    String selected = getOrderType();
-    BuilderFactory builderFactory = new BuilderFactory();
-    objOB = builderFactory.getUIBuilder(OrderTypes.CA_ORDER);
-    // end create
-
-     */
     lblOrderType = new JLabel("Order Type:");
     lblHistoryTitle = new JLabel(this.ORDERS_TITLE);
 
@@ -83,14 +72,11 @@ public class OrderManager extends JFrame {
     getTotalButton.setMnemonic(KeyEvent.VK_C);
     JButton exitButton = new JButton(OrderManager.EXIT);
     exitButton.setMnemonic(KeyEvent.VK_X);
-    updtButton = new JButton(OrderManager.UPDATE);
-    updtButton.setEnabled(false);
     ButtonHandler objButtonHandler = new ButtonHandler(this);
 
     cmbOrderType.addActionListener(objButtonHandler);
     getTotalButton.addActionListener(objButtonHandler);
     createOrderButton.addActionListener(objButtonHandler);
-    updtButton.addActionListener(objButtonHandler);
     exitButton.addActionListener(new ButtonHandler());
 
     // For layout purposes, put the buttons in a separate panel
@@ -103,7 +89,6 @@ public class OrderManager extends JFrame {
     panel.add(getTotalButton);
     panel.add(createOrderButton);
     panel.add(exitButton);
-    panel.add(updtButton);
     gbc2.anchor = GridBagConstraints.EAST;
     gbc2.gridx = 0;
     gbc2.gridy = 0;
@@ -114,9 +99,7 @@ public class OrderManager extends JFrame {
     gbc2.gridx = 2;
     gbc2.gridy = 0;
     gridbag2.setConstraints(exitButton, gbc2);
-    gbc2.gridx = 3;
-    gbc2.gridy = 0;
-    gridbag2.setConstraints(updtButton, gbc2);
+;
 
     // ****************************************************
     GridBagLayout gridbag = new GridBagLayout();
@@ -283,13 +266,9 @@ public class OrderManager extends JFrame {
   public void setOrderId(int id){
     this.orderId = id;
   }
-  public OrderBuilder getOrderBuilder(){
-    return this.objOB;
-  }
 
 
-
-} // End of class OrderManager
+  } // End of class OrderManager
 
 class ClickHandler implements ListSelectionListener {
   OrderManager objOrderManager;
@@ -303,7 +282,6 @@ class ClickHandler implements ListSelectionListener {
   public void valueChanged(ListSelectionEvent e) {
     double amntOrder;
     double taxOrder;
-    objOrderManager.updtButton.setEnabled(true);
     id = objOrderManager.getHistoryTable().getValueAt(objOrderManager.getHistoryTable().getSelectedRow(), 0).toString();
     String orderType = objOrderManager.getHistoryTable().getValueAt(objOrderManager.getHistoryTable().getSelectedRow(), 1).toString();
     int idValue = Integer.parseInt(id);
@@ -320,18 +298,42 @@ class ClickHandler implements ListSelectionListener {
       director.build();
       director.setValues(amnt,tax); //Obtener amount y tax de las ordenes dentro del vector
       JPanel UIObj = builderBH.getPanel();
+      JButton btnUpdate = new JButton("Update");
+      btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+          btnUpdateShowActionPerformed(evt);
+        }
+      });
+      UIObj.add(btnUpdate);
       objOrderManager.displayNewUI(UIObj);
     } catch (Exception exception) {
       System.out.println("No entra");
     }
   }
-  public double getOrderAmount(){
-    String strAmount = builderBH.getOrderAmount();
+  public void btnUpdateShowActionPerformed(java.awt.event.ActionEvent evt) {
+    try {
+      int idValue = Integer.parseInt(id);
+      getOrderAmount();
+      getTaxValue();
+      objOrderManager.getOrderVisitor().getOrderSimple(idValue).setOrderAmount(getOrderAmount());
+      objOrderManager.getOrderVisitor().getOrderSimple(idValue).setAdditionalTax(getTaxValue());
+      System.out.println(objOrderManager.getOrderVisitor().getOrderSimple(idValue).getOrderAmount());
+      System.out.println(objOrderManager.getOrderVisitor().getOrderSimple(idValue).getAdditionalTax());
+      objOrderManager.updateHistory();
+    } catch (Exception e) {
+      System.out.println("la madre pa todos");
+    }
 
-    return 0;
   }
-  public double getTaxValue(){
-    return 0;
+  public double getOrderAmount() throws Exception {
+    String strAmount = builderBH.getOrderAmount();
+    double dblAmountUpdt = Double.parseDouble(strAmount);
+    return dblAmountUpdt;
+  }
+  public double getTaxValue() throws Exception {
+    String strTax = builderBH.getTax();
+    double dblTaxUpdt = Double.parseDouble(strTax);
+    return dblTaxUpdt;
   }
   
 }
@@ -342,7 +344,6 @@ class ButtonHandler implements ActionListener {
   OrderBuilder builderBH;
   int id = 0;
   OrderVisitor visitor;
-  ClickHandler ch;
 
   public void actionPerformed(ActionEvent e) {
     String totalResult = null;
@@ -413,37 +414,6 @@ class ButtonHandler implements ActionListener {
       totalResult = " Orders Total = " + totalResult;
       objOrderManager.setTotalValue(totalResult);
     }
-    if (e.getActionCommand().equals(OrderManager.UPDATE)){
-      //metodo update de allOrders
-      objOrderManager.setTotalValue("Se ha actualizado la orden!");
-
-      String strOrderAmount = builderBH.getOrderAmount();
-      String strTax = builderBH.getTax();
-      /*
-      double dblOrderAmount = 0.0;
-      double dblTax = 0.0;
-      //double dblSH = 0.0;
-
-      if (strOrderAmount.trim().length() == 0) {
-        strOrderAmount = "0.0";
-      }
-      if (strTax.trim().length() == 0) {
-        strTax = "0.0";
-      }
-      dblOrderAmount = Double.parseDouble(strOrderAmount);
-      dblTax = Double.parseDouble(strTax);
-      try {
-        System.out.println(" j");
-        objOrderManager.getOrderVisitor().getOrderSimple(objOrderManager.getOrderId()).setOrderAmount(dblOrderAmount);
-        objOrderManager.getOrderVisitor().getOrderSimple(objOrderManager.getOrderId()).setAdditionalTax(dblTax);
-        //System.out.println(objOrderManager.getOrderVisitor().getOrderSimple(objOrderManager.getOrderId()).getOrderAmount());
-        //System.out.println(objOrderManager.getOrderVisitor().getOrderSimple(objOrderManager.getOrderId()).getAdditionalTax());
-      } catch (Exception exception) {
-        exception.printStackTrace();
-      }
-      objOrderManager.updtButton.setEnabled(false);
-      */
-    }
 
   }
 
@@ -470,7 +440,6 @@ class ButtonHandler implements ActionListener {
   public ButtonHandler(OrderManager inObjOrderManager) {
     objOrderManager = inObjOrderManager;
     visitor = objOrderManager.getOrderVisitor();
-    //builderBH = objOrderManager.getOrderBuilder();
   }
 
 } // End of class ButtonHandler
