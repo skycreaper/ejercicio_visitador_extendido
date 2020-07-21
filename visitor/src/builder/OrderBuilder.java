@@ -11,4 +11,6 @@ public abstract class OrderBuilder {
     public JPanel getPanel() {
         return orderUI;
     }
+    public abstract void setValuesFromOldOrders(String amount, String tax);
+
 }

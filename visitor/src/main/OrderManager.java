@@ -115,8 +115,8 @@ public class OrderManager extends JFrame {
     Vector<String> columns = new Vector<String>();
     columns.add("Id");
     columns.add("Type");
-    columns.add("Pirce");
-    columns.add("Crated time");
+    columns.add("Price");
+    columns.add("Created time");
 
     historyTable = new JTable(new Vector(), columns);
 
@@ -271,13 +271,15 @@ class ClickHandler implements ListSelectionListener {
   public void valueChanged(ListSelectionEvent e) {
     System.out.println(objOrderManager.getHistoryTable().getValueAt(objOrderManager.getHistoryTable().getSelectedRow(), 0).toString());
     String orderType = objOrderManager.getHistoryTable().getValueAt(objOrderManager.getHistoryTable().getSelectedRow(), 1).toString();
+
     BuilderFactory factory = new BuilderFactory();
     builderBH = factory.getUIBuilder(orderType);
     DirectorUI director = new DirectorUI(builderBH);
     director.build();
+    director.setValues("hola","mundo"); //Obtener amount y tax de las ordenes dentro del vector
     JPanel UIObj = builderBH.getPanel();
     objOrderManager.displayNewUI(UIObj);
-    objOrderManager.setOrderType(orderType);
+
   }
   
 }

@@ -55,4 +55,10 @@ public class CaliforniaUI extends OrderBuilder {
         return txtTaxCalifornia.getText();
     }
 
+    @Override
+    public void setValuesFromOldOrders(String amount, String tax) {
+        txtOrderAmnt.setText(amount);
+        txtTaxCalifornia.setText(tax);
+    }
+
 }

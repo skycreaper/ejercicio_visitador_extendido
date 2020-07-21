@@ -55,4 +55,10 @@ public class OverseasUI extends OrderBuilder {
         return txtTaxOverseas.getText();
     }
 
+    @Override
+    public void setValuesFromOldOrders(String amount, String tax) {
+        txtOrderAmnt.setText(amount);
+        txtTaxOverseas.setText(tax);
+    }
+
 }

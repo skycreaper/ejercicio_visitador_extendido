@@ -54,4 +54,10 @@ public class ColombianUI extends OrderBuilder {
     public String getTax() {
         return txtTaxColombia.getText();
     }
+
+    @Override
+    public void setValuesFromOldOrders(String amount, String tax) {
+        txtOrderAmnt.setText(amount);
+        txtTaxColombia.setText(tax);
+    }
 }

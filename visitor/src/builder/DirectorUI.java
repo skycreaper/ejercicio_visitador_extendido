@@ -9,4 +9,8 @@ public class DirectorUI {
     public void build () {
         builderUI.addUIComponent();
     }
+
+    public void setValues(String amnt, String tax) {
+        builderUI.setValuesFromOldOrders(amnt, tax);
+    }
 }

@@ -46,4 +46,10 @@ public class NonCaliforniaUI extends OrderBuilder {
         return "0";
     }
 
+    @Override
+    public void setValuesFromOldOrders(String amount, String tax) {
+        txtOrderAmnt.setText(amount);
+
+    }
+
 }
