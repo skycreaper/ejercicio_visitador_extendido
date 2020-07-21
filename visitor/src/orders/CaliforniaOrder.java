@@ -38,6 +38,17 @@ public class CaliforniaOrder extends OrderComponent implements Order {
     return orderAmount;
   }
 
+  @Override
+  public void setOrderAmount(double dblAmount) {
+    this.orderAmount = dblAmount;
+  }
+
+  @Override
+  public void setAdditionalTax(double dblTax) {
+    this.additionalTax = dblTax;
+  }
+
+
   public double getAdditionalTax() {
     return additionalTax;
   }

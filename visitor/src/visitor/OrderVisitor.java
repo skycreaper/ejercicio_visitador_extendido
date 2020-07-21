@@ -41,6 +41,14 @@ public class OrderVisitor extends OrderComponent implements VisitorInterface {
   }
 
   @Override
+  public void setOrderAmount(double dblAmount) {
+  }
+
+  @Override
+  public void setAdditionalTax(double dblTax) {
+  }
+
+  @Override
   public double getOrderTotal() {
     return orderTotal;
   }
@@ -78,5 +86,8 @@ public class OrderVisitor extends OrderComponent implements VisitorInterface {
   public LocalDateTime getCreatedTime() {
     // TODO Auto-generated method stub
     return null;
+  }
+  public OrderComponent getOrderSimple(int idOrden) throws Exception {
+    return orders.getOrder(idOrden);
   }
 }

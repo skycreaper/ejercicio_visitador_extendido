@@ -23,6 +23,9 @@ public abstract class OrderComponent {
     public double getOrderAmount() {
         return 0.0;
     }
+    public abstract void setOrderAmount(double dblAmount);
+    public abstract void setAdditionalTax(double dblTax);
+
 
     public abstract double getOrderTotal();
     public abstract LocalDateTime getCreatedTime();

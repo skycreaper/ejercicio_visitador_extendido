@@ -38,6 +38,16 @@ public class NonCaliforniaOrder extends OrderComponent implements Order {
     return orderAmount;
   }
 
+  @Override
+  public void setOrderAmount(double dblAmount) {
+    this.orderAmount = dblAmount;
+  }
+
+  @Override
+  public void setAdditionalTax(double dblTax) {
+    dblTax = 0;
+  }
+
   public void accept(OrderVisitor v) {
     v.visit(this);
   }

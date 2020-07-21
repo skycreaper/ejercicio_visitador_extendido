@@ -61,4 +61,22 @@ public class AllOrders implements Iterator<OrderComponent> {
             }
         }
     }
+
+    public OrderComponent getOrder(int orderId) throws Exception {
+        OrderComponent oComp = null;
+        try {
+            for (int i = 0; i < this.orderColl.size(); i++) {
+                if (this.orderColl.get(i).getId() == orderId) {
+                    //this.orderColl.set(i, newOrder);
+                    oComp = orderColl.get(i);
+                    break;
+                }
+            }
+        } catch (Exception e){
+        }
+        return oComp;
+    }
+    /*
+    se necesita retornar los valores de amount y tax
+     */
 }

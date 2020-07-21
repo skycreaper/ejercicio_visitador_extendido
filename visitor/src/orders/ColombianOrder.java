@@ -43,6 +43,16 @@ public class ColombianOrder extends OrderComponent implements Order {
         return orderAmount;
     }
 
+    @Override
+    public void setOrderAmount(double dblAmount) {
+        this.orderAmount = dblAmount;
+    }
+
+    @Override
+    public void setAdditionalTax(double dblTax) {
+        this.additionalSH = dblTax;
+    }
+
     public double getAdditionalSH() {
         return additionalSH;
     }
