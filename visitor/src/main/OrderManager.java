@@ -22,14 +22,16 @@ public class OrderManager extends JFrame {
   public static final String NON_CA_ORDER = "Non-California Order";
   public static final String OVERSEAS_ORDER = "Overseas Order";
   public static final String COLOMBIAN_ORDER = "Colombian Order";
-
+  
+  public final String ORDERS_TITLE = "Order History";
 
   private JComboBox cmbOrderType;
   private JLabel lblOrderType;
   private JPanel orderPanel;
+  private JPanel allOrdersPanel;
   private OrderVisitor objVisitor;
-  private JLabel lblTotal, lblTotalValue;
-
+  private JLabel lblTotal, lblTotalValue, lblHistoryTitle;
+  private JTable historyTable;
 
   public OrderManager() {
     super("Visitor Pattern - Example");
@@ -37,6 +39,7 @@ public class OrderManager extends JFrame {
     //Create the visitor instance
     objVisitor = new OrderVisitor();
     orderPanel = new JPanel();
+    allOrdersPanel = new JPanel();
     cmbOrderType = new JComboBox();
     lblTotal = new JLabel("Result:");
     lblTotalValue = new JLabel("Click Create or GetTotal Button");
@@ -46,9 +49,8 @@ public class OrderManager extends JFrame {
     cmbOrderType.addItem(OrderManager.OVERSEAS_ORDER);
     cmbOrderType.addItem(OrderManager.COLOMBIAN_ORDER);
 
-
     lblOrderType = new JLabel("Order Type:");
-
+    lblHistoryTitle = new JLabel(this.ORDERS_TITLE);
 
     //Create the open button
     JButton getTotalButton = new JButton(OrderManager.GET_TOTAL);
@@ -97,6 +99,21 @@ public class OrderManager extends JFrame {
     buttonPanel.add(lblTotal);
     buttonPanel.add(lblTotalValue);
 
+    /* history components */
+    String[] columns = { "Id", "Type", "Price", "Date" };
+    String[][] data = {
+      {"1","2","3","4"},
+      {"1","2","3","4"},
+      {"1","2","3","4"}
+    };
+    historyTable = new JTable(data, columns);
+
+    JScrollPane scrollPane = new JScrollPane(historyTable);
+    
+    allOrdersPanel.add(lblHistoryTitle);
+    allOrdersPanel.add(scrollPane);
+    buttonPanel.add(allOrdersPanel);
+
     gbc.insets.top = 40;
     gbc.insets.bottom = 5;
     gbc.insets.left = 5;
@@ -126,6 +143,12 @@ public class OrderManager extends JFrame {
     gbc.insets.right = 2;
     gbc.insets.top = 20;
 
+    gbc.gridx = 3;
+    gbc.gridy = 0;
+    gbc.fill = GridBagConstraints.VERTICAL;
+    gbc.weighty = 0.0;
+    gbc.gridheight = 3;
+    gridbag.setConstraints(allOrdersPanel, gbc);
     //****************************************************
 
     //Add the buttons and the log to the frame
@@ -154,7 +177,7 @@ public class OrderManager extends JFrame {
                            );
 
     //frame.pack();
-    frame.setSize(600, 500);
+    frame.setSize(1000, 600);
     frame.setVisible(true);
   }
 

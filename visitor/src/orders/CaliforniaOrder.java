@@ -2,7 +2,7 @@ package orders;
 
 import visitor.OrderVisitor;
 
-public class CaliforniaOrder implements Order, OrderComponent {
+public class CaliforniaOrder extends OrderComponent implements Order {
 
   private int id;
   private double orderAmount;

@@ -11,7 +11,7 @@ import orders.Order;
 import orders.OrderComponent;
 import iterator.AllOrders;
 
-public class OrderVisitor implements VisitorInterface, OrderComponent {
+public class OrderVisitor extends OrderComponent implements VisitorInterface {
   private AllOrders orders;
 
   public OrderVisitor() {
@@ -52,5 +52,18 @@ public class OrderVisitor implements VisitorInterface, OrderComponent {
     }
 
     return orderTotal;
+  }
+
+  /**
+   * Corrige los valores de una orden
+   */
+  public String editOrder(OrderComponent order) {
+    String message = "Order updated";
+    try {
+      this.orders.update(order.getId(), order);
+    } catch (Exception e) {
+      message = "Order couldn't be updated";
+    } 
+    return message;
   }
 }

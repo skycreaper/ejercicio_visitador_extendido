@@ -1,17 +1,19 @@
 package iterator;
 
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
 import orders.OrderComponent;
 
-public class AllOrders implements Iterator {
+public class AllOrders implements Iterator<OrderComponent> {
 
     Vector<OrderComponent> orderColl; // Colección de ordenes
     Enumeration<OrderComponent> enumerationOrders;
     OrderComponent nextOrder;
+    HashMap<Integer, OrderComponent> orderColl2;
 
 
     public AllOrders() {
@@ -50,8 +52,16 @@ public class AllOrders implements Iterator {
         }
     }
 
-    public void add(Object order) {
-        
+    /**
+     * Updates an order using the id
+     * @param orderId: the id of the order
+     * @param newOrder: the new order that will be replacing the old order
+     */
+    public void update(int orderId, OrderComponent newOrder) throws Exception {
+        for (int i = 0; i < this.orderColl.size(); i++) {
+            if (this.orderColl.get(i).getId() == orderId) {
+                this.orderColl.set(orderId, newOrder);
+            }
+        }
     }
-    
 }
