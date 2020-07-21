@@ -1,8 +1,8 @@
 package orders;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import utils.OrderTypes;
 import visitor.OrderVisitor;
 
 public class ColombianOrder extends OrderComponent implements Order {
@@ -32,6 +32,11 @@ public class ColombianOrder extends OrderComponent implements Order {
     @Override
     public void accept(OrderVisitor v) {
         v.visit(this);
+    }
+
+    @Override
+    public String getTypeName() {
+      return OrderTypes.COLOMBIAN_ORDER;
     }
 
     public double getOrderAmount() {

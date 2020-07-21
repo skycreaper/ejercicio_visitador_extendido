@@ -10,8 +10,8 @@ public class OverseasUI extends OrderBuilder {
     @Override
     public void addUIComponent() {
         orderUI = new JPanel();
-        lblOrderAmnt = new JLabel("Order Amount:");
-        lblTaxOverseas = new JLabel("Additional Overseas Tax :");
+        lblOrderAmnt = new JLabel("Order Amount: ");
+        lblTaxOverseas = new JLabel("Additional S & H:");
         txtOrderAmnt = new JTextField(10);
         txtTaxOverseas = new JTextField(10);
 

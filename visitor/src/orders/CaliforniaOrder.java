@@ -3,6 +3,7 @@ package orders;
 import java.time.LocalDateTime;
 
 import visitor.OrderVisitor;
+import utils.OrderTypes;
 
 public class CaliforniaOrder extends OrderComponent implements Order {
 
@@ -26,6 +27,11 @@ public class CaliforniaOrder extends OrderComponent implements Order {
   @Override
   public LocalDateTime getCreatedTime() {
     return this.createdTime;
+  }
+
+  @Override
+  public String getTypeName() {
+    return OrderTypes.CA_ORDER;
   }
 
   public double getOrderAmount() {

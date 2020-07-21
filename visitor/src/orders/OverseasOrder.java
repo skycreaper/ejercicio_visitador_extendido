@@ -2,6 +2,7 @@ package orders;
 
 import java.time.LocalDateTime;
 
+import utils.OrderTypes;
 import visitor.OrderVisitor;
 
 public class OverseasOrder extends OrderComponent implements Order {
@@ -30,6 +31,11 @@ public class OverseasOrder extends OrderComponent implements Order {
     return this.createdTime;
   }
 
+  @Override
+  public String getTypeName() {
+    return OrderTypes.OVERSEAS_ORDER;
+  }
+  
   public double getOrderAmount() {
     return orderAmount;
   }

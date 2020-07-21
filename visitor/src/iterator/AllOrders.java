@@ -57,7 +57,7 @@ public class AllOrders implements Iterator<OrderComponent> {
     public void update(int orderId, OrderComponent newOrder) throws Exception {
         for (int i = 0; i < this.orderColl.size(); i++) {
             if (this.orderColl.get(i).getId() == orderId) {
-                this.orderColl.set(orderId, newOrder);
+                this.orderColl.set(i, newOrder);
             }
         }
     }

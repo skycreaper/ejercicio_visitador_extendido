@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import builder.CaliforniaUI;
@@ -16,6 +18,7 @@ import builder.OrderBuilder;
 import builder.OverseasUI;
 import orders.*;
 import visitor.OrderVisitor;
+import utils.OrderTypes;
 
 public class OrderManager extends JFrame {
 
@@ -23,11 +26,13 @@ public class OrderManager extends JFrame {
   public static final String GET_TOTAL = "Get Total";
   public static final String CREATE_ORDER = "Create Order";
   public static final String EXIT = "Exit";
+  /*
   public static final String CA_ORDER = "California Order";
   public static final String NON_CA_ORDER = "Non-California Order";
   public static final String OVERSEAS_ORDER = "Overseas Order";
   public static final String COLOMBIAN_ORDER = "Colombian Order";
-  
+  */
+
   public final String ORDERS_TITLE = "Order History";
 
   private JComboBox cmbOrderType;
@@ -41,7 +46,7 @@ public class OrderManager extends JFrame {
   public OrderManager() {
     super("Visitor Pattern - Example");
 
-    //Create the visitor instance
+    // Create the visitor instance
     objVisitor = new OrderVisitor();
     orderPanel = new JPanel();
     allOrdersPanel = new JPanel();
@@ -50,15 +55,15 @@ public class OrderManager extends JFrame {
     lblOrderCreated = new JLabel("Click Create or GetTotal Button");
     lblTotalValue = new JLabel("Click Create or GetTotal Button");
     cmbOrderType.addItem("");
-    cmbOrderType.addItem(OrderManager.CA_ORDER);
-    cmbOrderType.addItem(OrderManager.NON_CA_ORDER);
-    cmbOrderType.addItem(OrderManager.OVERSEAS_ORDER);
-    cmbOrderType.addItem(OrderManager.COLOMBIAN_ORDER);
+    cmbOrderType.addItem(OrderTypes.CA_ORDER);
+    cmbOrderType.addItem(OrderTypes.NON_CA_ORDER);
+    cmbOrderType.addItem(OrderTypes.OVERSEAS_ORDER);
+    cmbOrderType.addItem(OrderTypes.COLOMBIAN_ORDER);
 
     lblOrderType = new JLabel("Order Type:");
     lblHistoryTitle = new JLabel(this.ORDERS_TITLE);
 
-    //Create the open button
+    // Create the open button
     JButton getTotalButton = new JButton(OrderManager.GET_TOTAL);
     getTotalButton.setMnemonic(KeyEvent.VK_G);
     JButton createOrderButton = new JButton(OrderManager.CREATE_ORDER);
@@ -67,13 +72,12 @@ public class OrderManager extends JFrame {
     exitButton.setMnemonic(KeyEvent.VK_X);
     ButtonHandler objButtonHandler = new ButtonHandler(this);
 
-
     cmbOrderType.addActionListener(objButtonHandler);
     getTotalButton.addActionListener(objButtonHandler);
     createOrderButton.addActionListener(objButtonHandler);
     exitButton.addActionListener(new ButtonHandler());
 
-    //For layout purposes, put the buttons in a separate panel
+    // For layout purposes, put the buttons in a separate panel
     JPanel buttonPanel = new JPanel();
 
     JPanel panel = new JPanel();
@@ -94,7 +98,7 @@ public class OrderManager extends JFrame {
     gbc2.gridy = 0;
     gridbag2.setConstraints(exitButton, gbc2);
 
-    //****************************************************
+    // ****************************************************
     GridBagLayout gridbag = new GridBagLayout();
     buttonPanel.setLayout(gridbag);
     GridBagConstraints gbc = new GridBagConstraints();
@@ -103,17 +107,20 @@ public class OrderManager extends JFrame {
     buttonPanel.add(cmbOrderType);
     buttonPanel.add(orderPanel);
     buttonPanel.add(lblTotal);
-    //buttonPanel.add(lblOrderCreated);
+    // buttonPanel.add(lblOrderCreated);
     buttonPanel.add(lblTotalValue);
 
     /* history components */
-    //String[] columns = { "Id", "Price", "Date" };
+    // String[] columns = { "Id", "Price", "Date" };
     Vector<String> columns = new Vector<String>();
     columns.add("Id");
+    columns.add("Type");
     columns.add("Pirce");
     columns.add("Crated time");
 
     historyTable = new JTable(new Vector(), columns);
+
+    historyTable.getSelectionModel().addListSelectionListener(new ClickHandler(this));
 
     JScrollPane scrollPane = new JScrollPane(historyTable);
     
@@ -197,6 +204,10 @@ public class OrderManager extends JFrame {
     return objVisitor;
   }
 
+  public void setOrderType(String orderType) {
+    cmbOrderType.setSelectedItem(orderType);
+  }
+
   public JComboBox getOrderTypeCtrl() {
     return cmbOrderType;
   }
@@ -205,13 +216,29 @@ public class OrderManager extends JFrame {
     return (String) cmbOrderType.getSelectedItem();
   }
 
+  public JTable getHistoryTable() {
+    return this.historyTable;
+  }
+
   public void updateHistory() {
-    Vector<String[]> data = this.objVisitor.getAllOrdersData();
-    this.deleteAllTableElements();
-    DefaultTableModel model = (DefaultTableModel) historyTable.getModel();
-    for (String[] object : data) {
-      model.addRow(object);
+    try {
+      Vector<OrderComponent> data = this.objVisitor.getAllOrdersData();
+      this.deleteAllTableElements();
+      DefaultTableModel model = (DefaultTableModel) historyTable.getModel();
+      for (OrderComponent order : data) {
+        model.addRow(new String[]
+          {
+            Integer.toString(order.getId()),
+            order.getTypeName(),
+            Double.toString(order.getOrderTotal()),
+            order.getCreatedTime().toString()
+          }
+        );
+      }
+    } catch (Exception e) {
+      //TODO: handle exception
     }
+    
   }
 
   private void deleteAllTableElements() {
@@ -231,6 +258,29 @@ public class OrderManager extends JFrame {
 
 
 } // End of class OrderManager
+
+class ClickHandler implements ListSelectionListener {
+  OrderManager objOrderManager;
+  OrderBuilder builderBH;
+
+  public ClickHandler(OrderManager objOrderManager) {
+    this.objOrderManager = objOrderManager;
+  }
+
+  @Override
+  public void valueChanged(ListSelectionEvent e) {
+    System.out.println(objOrderManager.getHistoryTable().getValueAt(objOrderManager.getHistoryTable().getSelectedRow(), 0).toString());
+    String orderType = objOrderManager.getHistoryTable().getValueAt(objOrderManager.getHistoryTable().getSelectedRow(), 1).toString();
+    BuilderFactory factory = new BuilderFactory();
+    builderBH = factory.getUIBuilder(orderType);
+    DirectorUI director = new DirectorUI(builderBH);
+    director.build();
+    JPanel UIObj = builderBH.getPanel();
+    objOrderManager.displayNewUI(UIObj);
+    objOrderManager.setOrderType(orderType);
+  }
+  
+}
 
 class ButtonHandler implements ActionListener {
 
@@ -314,16 +364,16 @@ class ButtonHandler implements ActionListener {
 
   public Order createOrder(String orderType, double orderAmount, double tax) {
     Order newOrder = null;
-    if (orderType.equalsIgnoreCase(OrderManager.CA_ORDER)) {
+    if (orderType.equalsIgnoreCase(OrderTypes.CA_ORDER)) {
       newOrder = new CaliforniaOrder(id, orderAmount, tax);
     }
-    if (orderType.equalsIgnoreCase(OrderManager.NON_CA_ORDER)) {
+    if (orderType.equalsIgnoreCase(OrderTypes.NON_CA_ORDER)) {
       newOrder = new NonCaliforniaOrder(id, orderAmount);
     }
-    if (orderType.equalsIgnoreCase(OrderManager.OVERSEAS_ORDER)) {
+    if (orderType.equalsIgnoreCase(OrderTypes.OVERSEAS_ORDER)) {
       newOrder = new OverseasOrder(id, orderAmount, tax);
     }
-    if (orderType.equalsIgnoreCase(OrderManager.COLOMBIAN_ORDER)) {
+    if (orderType.equalsIgnoreCase(OrderTypes.COLOMBIAN_ORDER)) {
       newOrder = new ColombianOrder(id, orderAmount, tax);
     }
     id++;
@@ -343,13 +393,13 @@ class BuilderFactory { // se agrega clase para crear el tipo de orden
 
   public OrderBuilder getUIBuilder(String str) {
     OrderBuilder builder = null;
-    if (str.equals(OrderManager.CA_ORDER)) {
+    if (str.equals(OrderTypes.CA_ORDER)) {
       builder = new CaliforniaUI();
-    } else if (str.equals(OrderManager.COLOMBIAN_ORDER)) {
+    } else if (str.equals(OrderTypes.COLOMBIAN_ORDER)) {
       builder = new ColombianUI();
-    } else if (str.equals(OrderManager.NON_CA_ORDER)) {
+    } else if (str.equals(OrderTypes.NON_CA_ORDER)) {
       builder = new NonCaliforniaUI();
-    } else if (str.equals(OrderManager.OVERSEAS_ORDER)) {
+    } else if (str.equals(OrderTypes.OVERSEAS_ORDER)) {
       builder = new OverseasUI();
     }
     return builder;

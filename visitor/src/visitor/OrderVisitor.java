@@ -12,6 +12,7 @@ import orders.OrderComponent;
 import iterator.AllOrders;
 
 public class OrderVisitor extends OrderComponent implements VisitorInterface {
+
   private AllOrders orders;
   private double orderTotal;
 
@@ -44,22 +45,18 @@ public class OrderVisitor extends OrderComponent implements VisitorInterface {
     return orderTotal;
   }
 
-  public Vector<String[]> getAllOrdersData() {
+  public Vector<OrderComponent> getAllOrdersData() {
     orderTotal = 0.0;
-    Vector<String[]> data = new Vector<String[]>();
-    try {
-      while (orders.hasNext()) {
-        OrderComponent tempOrder = orders.next();
-        orderTotal += tempOrder.getOrderTotal();
-        String[] row = {
+    Vector<OrderComponent> data = new Vector<OrderComponent>();
+    while (orders.hasNext()) {
+      OrderComponent tempOrder = orders.next();
+      orderTotal += tempOrder.getOrderTotal();
+        /*String[] row = {
           Integer.toString(tempOrder.getId()),
           Double.toString(tempOrder.getOrderTotal()),
           tempOrder.getCreatedTime().toString()
-        };
-        data.add(row);
-      }
-    } catch (Exception e) {
-      // TODO: handle exception
+      };*/
+      data.add(tempOrder);
     }
     return data;
   }

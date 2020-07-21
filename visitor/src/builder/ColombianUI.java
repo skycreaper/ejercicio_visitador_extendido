@@ -11,8 +11,8 @@ public class ColombianUI extends OrderBuilder {
     @Override
     public void addUIComponent() {
         orderUI = new JPanel();
-        lblOrderAmnt = new JLabel("Order Amount:");
-        lblTaxColombia = new JLabel("Additional Colombian Tax :");
+        lblOrderAmnt = new JLabel("Order Amount: ");
+        lblTaxColombia = new JLabel("Additional S & H:");
         txtOrderAmnt = new JTextField(10);
         txtTaxColombia = new JTextField(10);
 

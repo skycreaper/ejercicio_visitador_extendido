@@ -10,8 +10,8 @@ public class CaliforniaUI extends OrderBuilder {
     @Override
     public void addUIComponent() {
         orderUI = new JPanel();
-        lblOrderAmnt = new JLabel("Order Amount:");
-        lblTaxCalifornia = new JLabel("Additional California Tax :");
+        lblOrderAmnt = new JLabel("Order Amount: ");
+        lblTaxCalifornia = new JLabel("Additional Tax: ");
         txtOrderAmnt = new JTextField(10);
         txtTaxCalifornia = new JTextField(10);
 
