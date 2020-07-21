@@ -1,7 +1,6 @@
 package iterator;
 
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Vector;
@@ -13,8 +12,6 @@ public class AllOrders implements Iterator<OrderComponent> {
     Vector<OrderComponent> orderColl; // Colección de ordenes
     Enumeration<OrderComponent> enumerationOrders;
     OrderComponent nextOrder;
-    HashMap<Integer, OrderComponent> orderColl2;
-
 
     public AllOrders() {
         this.orderColl = new Vector<OrderComponent>();

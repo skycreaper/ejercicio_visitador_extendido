@@ -1,21 +1,31 @@
 package orders;
 
+import java.time.LocalDateTime;
+
 import visitor.OrderVisitor;
 
 public class NonCaliforniaOrder extends OrderComponent implements Order {
 
   private int id;
+  private LocalDateTime createdTime;
   private double orderAmount;
 
   public NonCaliforniaOrder() {}
 
   public NonCaliforniaOrder(int id, double inp_orderAmount) {
     this.id = id;
+    this.createdTime = LocalDateTime.now();
     orderAmount = inp_orderAmount;
   }
 
+  @Override
   public int getId() {
     return this.id;
+  }
+
+  @Override
+  public LocalDateTime getCreatedTime() {
+    return this.createdTime;
   }
 
   public double getOrderAmount() {

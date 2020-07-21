@@ -1,18 +1,19 @@
 package visitor;
 
+import java.time.LocalDateTime;
 import java.util.Vector;
 
 import orders.CaliforniaOrder;
 import orders.ColombianOrder;
 import orders.NonCaliforniaOrder;
 import orders.OverseasOrder;
-import orders.Order;
 
 import orders.OrderComponent;
 import iterator.AllOrders;
 
 public class OrderVisitor extends OrderComponent implements VisitorInterface {
   private AllOrders orders;
+  private double orderTotal;
 
   public OrderVisitor() {
     orders = new AllOrders();
@@ -20,38 +21,47 @@ public class OrderVisitor extends OrderComponent implements VisitorInterface {
 
   @Override
   public void visit(NonCaliforniaOrder inp_order) {
-    //orderTotal = orderTotal + inp_order.getOrderAmount();
     orders.addOrder(inp_order);
   }
 
   @Override
   public void visit(CaliforniaOrder inp_order) {
-    //orderTotal = orderTotal + inp_order.getOrderAmount() + inp_order.getAdditionalTax();
     orders.addOrder(inp_order);
   }
 
   @Override
   public void visit(OverseasOrder inp_order) {
-    //orderTotal = orderTotal + inp_order.getOrderAmount() + inp_order.getAdditionalSH();
     orders.addOrder(inp_order);
   }
 
   @Override
   public void visit(ColombianOrder inp_order) {
-    //orderTotal = orderTotal + inp_order.getOrderAmount() + inp_order.getAdditionalSH();
     orders.addOrder(inp_order);
   }
 
   @Override
   public double getOrderTotal() {
-    double orderTotal = 0.0;
-
-    while(orders.hasNext()) {
-      OrderComponent tempOrder = orders.next();
-      orderTotal += tempOrder.getOrderTotal();
-    }
-
     return orderTotal;
+  }
+
+  public Vector<String[]> getAllOrdersData() {
+    orderTotal = 0.0;
+    Vector<String[]> data = new Vector<String[]>();
+    try {
+      while (orders.hasNext()) {
+        OrderComponent tempOrder = orders.next();
+        orderTotal += tempOrder.getOrderTotal();
+        String[] row = {
+          Integer.toString(tempOrder.getId()),
+          Double.toString(tempOrder.getOrderTotal()),
+          tempOrder.getCreatedTime().toString()
+        };
+        data.add(row);
+      }
+    } catch (Exception e) {
+      // TODO: handle exception
+    }
+    return data;
   }
 
   /**
@@ -63,7 +73,13 @@ public class OrderVisitor extends OrderComponent implements VisitorInterface {
       this.orders.update(order.getId(), order);
     } catch (Exception e) {
       message = "Order couldn't be updated";
-    } 
+    }
     return message;
+  }
+
+  @Override
+  public LocalDateTime getCreatedTime() {
+    // TODO Auto-generated method stub
+    return null;
   }
 }

@@ -1,21 +1,32 @@
 package orders;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import visitor.OrderVisitor;
 
 public class ColombianOrder extends OrderComponent implements Order {
 
     private int id;
+    private LocalDateTime createdTime;
     private double orderAmount;
     private double additionalSH;
 
     public ColombianOrder(int id, double inp_orderAmount, double inp_additionalSH) {
         this.id = id;
+        this.createdTime = LocalDateTime.now();
         orderAmount = inp_orderAmount;
         additionalSH = inp_additionalSH;
     }
 
+    @Override
     public int getId() {
-        return this.id;
+      return this.id;
+    }
+  
+    @Override
+    public LocalDateTime getCreatedTime() {
+      return this.createdTime;
     }
 
     @Override

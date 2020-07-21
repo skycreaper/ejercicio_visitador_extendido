@@ -2,7 +2,11 @@ package main;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Arrays;
+import java.util.Vector;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 import builder.CaliforniaUI;
 import builder.ColombianUI;
@@ -14,6 +18,7 @@ import orders.*;
 import visitor.OrderVisitor;
 
 public class OrderManager extends JFrame {
+
   public static final String newline = "\n";
   public static final String GET_TOTAL = "Get Total";
   public static final String CREATE_ORDER = "Create Order";
@@ -30,7 +35,7 @@ public class OrderManager extends JFrame {
   private JPanel orderPanel;
   private JPanel allOrdersPanel;
   private OrderVisitor objVisitor;
-  private JLabel lblTotal, lblTotalValue, lblHistoryTitle;
+  private JLabel lblTotal, lblTotalValue, lblOrderCreated, lblHistoryTitle;
   private JTable historyTable;
 
   public OrderManager() {
@@ -42,6 +47,7 @@ public class OrderManager extends JFrame {
     allOrdersPanel = new JPanel();
     cmbOrderType = new JComboBox();
     lblTotal = new JLabel("Result:");
+    lblOrderCreated = new JLabel("Click Create or GetTotal Button");
     lblTotalValue = new JLabel("Click Create or GetTotal Button");
     cmbOrderType.addItem("");
     cmbOrderType.addItem(OrderManager.CA_ORDER);
@@ -97,43 +103,21 @@ public class OrderManager extends JFrame {
     buttonPanel.add(cmbOrderType);
     buttonPanel.add(orderPanel);
     buttonPanel.add(lblTotal);
+    //buttonPanel.add(lblOrderCreated);
     buttonPanel.add(lblTotalValue);
 
     /* history components */
-    String[] columns = { "Id", "Type", "Price", "Date" };
-    String[][] data = {
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},{"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},
-      {"1","2","3","4"},{"1","2","3","4"},
+    //String[] columns = { "Id", "Price", "Date" };
+    Vector<String> columns = new Vector<String>();
+    columns.add("Id");
+    columns.add("Pirce");
+    columns.add("Crated time");
 
-      {"1","2","3","4"},
-    };
-    historyTable = new JTable(data, columns);
+    historyTable = new JTable(new Vector(), columns);
 
     JScrollPane scrollPane = new JScrollPane(historyTable);
     
+
     allOrdersPanel.add(lblHistoryTitle);
     allOrdersPanel.add(scrollPane);
     buttonPanel.add(allOrdersPanel);
@@ -221,6 +205,23 @@ public class OrderManager extends JFrame {
     return (String) cmbOrderType.getSelectedItem();
   }
 
+  public void updateHistory() {
+    Vector<String[]> data = this.objVisitor.getAllOrdersData();
+    this.deleteAllTableElements();
+    DefaultTableModel model = (DefaultTableModel) historyTable.getModel();
+    for (String[] object : data) {
+      model.addRow(object);
+    }
+  }
+
+  private void deleteAllTableElements() {
+    DefaultTableModel moedl = (DefaultTableModel) historyTable.getModel();
+    int rowCount = moedl.getRowCount();
+    for (int i = rowCount - 1; i >= 0; i--) {
+        moedl.removeRow(i);
+    }
+  }
+
   public void displayNewUI(JPanel uiObj) {
     orderPanel.removeAll();
     orderPanel.add(uiObj);
@@ -236,6 +237,7 @@ class ButtonHandler implements ActionListener {
   OrderManager objOrderManager;
   OrderBuilder builderBH;
   int id = 0;
+  OrderVisitor visitor;
 
   public void actionPerformed(ActionEvent e) {
     String totalResult = null;
@@ -243,6 +245,7 @@ class ButtonHandler implements ActionListener {
     if (e.getActionCommand().equals(OrderManager.EXIT)) {
       System.exit(1);
     }
+
     // Construye la interfaz correspondiente de acuerdo al tipo de orden
     if (e.getSource() == objOrderManager.getOrderTypeCtrl()) {
       String selection = objOrderManager.getOrderType();
@@ -290,18 +293,18 @@ class ButtonHandler implements ActionListener {
       Order order = createOrder(orderType, dblOrderAmount, dblTax);
       System.out.println("ordertype: "+orderType);
       //Get the Visitor
-      OrderVisitor visitor = objOrderManager.getOrderVisitor();
+      visitor = objOrderManager.getOrderVisitor();
 
       // accept the visitor instance
       order.accept(visitor);
 
       objOrderManager.setTotalValue(" Order Created Successfully");
+      objOrderManager.updateHistory();
     }
 
     // Obtiene el total de ordenes
     if (e.getActionCommand().equals(OrderManager.GET_TOTAL)) {
       //Get the Visitor
-      OrderVisitor visitor = objOrderManager.getOrderVisitor();
       totalResult = new Double(visitor.getOrderTotal()).toString();
       totalResult = " Orders Total = " + totalResult;
       objOrderManager.setTotalValue(totalResult);
@@ -331,6 +334,7 @@ class ButtonHandler implements ActionListener {
 
   public ButtonHandler(OrderManager inObjOrderManager) {
     objOrderManager = inObjOrderManager;
+    visitor = objOrderManager.getOrderVisitor();
   }
 
 } // End of class ButtonHandler
