@@ -317,8 +317,10 @@ class ClickHandler implements ListSelectionListener {
       getTaxValue();
       objOrderManager.getOrderVisitor().getOrderSimple(idValue).setOrderAmount(getOrderAmount());
       objOrderManager.getOrderVisitor().getOrderSimple(idValue).setAdditionalTax(getTaxValue());
-      System.out.println(objOrderManager.getOrderVisitor().getOrderSimple(idValue).getOrderAmount());
-      System.out.println(objOrderManager.getOrderVisitor().getOrderSimple(idValue).getAdditionalTax());
+      objOrderManager.getOrderVisitor().getOrderSimple(idValue).getOrderTotal();
+      System.out.println("nuevo valor de monto: " + objOrderManager.getOrderVisitor().getOrderSimple(idValue).getOrderAmount());
+      System.out.println("nuevo valor de impuesto: " + objOrderManager.getOrderVisitor().getOrderSimple(idValue).getAdditionalTax());
+      System.out.println("total orden simple: " + objOrderManager.getOrderVisitor().getOrderSimple(idValue).getOrderTotal());
       objOrderManager.updateHistory();
     } catch (Exception e) {
       System.out.println("la madre pa todos");
