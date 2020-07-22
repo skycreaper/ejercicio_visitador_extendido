@@ -200,9 +200,6 @@ public class OrderManager extends JFrame {
     return objVisitor;
   }
 
-  public void setOrderType(String orderType) {
-    cmbOrderType.setSelectedItem(orderType);
-  }
 
   public JComboBox getOrderTypeCtrl() {
     return cmbOrderType;
