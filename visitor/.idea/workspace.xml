@@ -21,7 +21,6 @@
   <component name="ChangeListManager">
     <list default="true" id="228c8380-8d43-4ce6-88c1-0039aae9c341" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/OrderManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/OrderManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../visitor_eap/visitor.eap" beforeDir="false" afterPath="$PROJECT_DIR$/../visitor_eap/visitor.eap" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
