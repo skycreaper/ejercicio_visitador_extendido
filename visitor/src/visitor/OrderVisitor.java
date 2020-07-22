@@ -18,7 +18,7 @@ public class OrderVisitor extends OrderComponent implements VisitorInterface {
   Vector<OrderComponent> data;
 
   public OrderVisitor() {
-    data = new Vector<OrderComponent>();
+    data = new Vector<>();
   }
 
   @Override
@@ -59,10 +59,8 @@ public class OrderVisitor extends OrderComponent implements VisitorInterface {
     orders = new AllOrders(this.data);
     while (orders.hasNext()) {
       OrderComponent tempOrder = orders.next();
-      System.out.println("hasNext, idOrder: "+tempOrder.getId()+" total: "+tempOrder.getOrderTotal());
       orderTotal += tempOrder.getOrderTotal();
     }
-    System.out.println("data lenght: "+data.size());
     return this.data;
   }
 
@@ -72,7 +70,7 @@ public class OrderVisitor extends OrderComponent implements VisitorInterface {
   public String editOrder(OrderComponent order) {
     String message = "Order updated";
     try {
-      this.orders.update(order.getId(), order);
+      this.orders.updateOrder(order.getId(), order);
     } catch (Exception e) {
       message = "Order couldn't be updated";
     }
@@ -86,14 +84,5 @@ public class OrderVisitor extends OrderComponent implements VisitorInterface {
   }
   public OrderComponent getOrderSimple(int idOrden) throws Exception {
     return orders.getOrder(idOrden);
-  }
-
-  public void updateOrder(OrderComponent order) {
-    try {
-      orders.update(order.getId(), order);
-    } catch (Exception e) {
-
-    }
-    
   }
 }

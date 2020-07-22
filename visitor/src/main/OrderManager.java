@@ -3,6 +3,7 @@ package main;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Vector;
 
 import javax.swing.*;
@@ -26,13 +27,6 @@ public class OrderManager extends JFrame {
   public static final String GET_TOTAL = "Get Total";
   public static final String CREATE_ORDER = "Create Order";
   public static final String EXIT = "Exit";
-
-  /*
-  public static final String CA_ORDER = "California Order";
-  public static final String NON_CA_ORDER = "Non-California Order";
-  public static final String OVERSEAS_ORDER = "Overseas Order";
-  public static final String COLOMBIAN_ORDER = "Colombian Order";
-  */
 
   public final String ORDERS_TITLE = "Order History";
 
@@ -99,7 +93,6 @@ public class OrderManager extends JFrame {
     gbc2.gridx = 2;
     gbc2.gridy = 0;
     gridbag2.setConstraints(exitButton, gbc2);
-;
 
     // ****************************************************
     GridBagLayout gridbag = new GridBagLayout();
@@ -224,44 +217,39 @@ public class OrderManager extends JFrame {
   }
 
   public void updateHistory() {
-    Vector<OrderComponent> data = null;
-    try {
-      data = this.objVisitor.getAllOrdersData();
-      System.out.println("data in tabla size "+data.size());
-      DefaultTableModel model = (DefaultTableModel) historyTable.getModel();
-      this.deleteAllTableElements(model);
-      System.out.println("Datos borrados");
+    Vector<OrderComponent> data = this.objVisitor.getAllOrdersData();
+    DefaultTableModel model = (DefaultTableModel) historyTable.getModel();
+    this.deleteAllTableElements(model);
 
-      for (OrderComponent order : data) {
-        System.out.println("order: "+Integer.toString(order.getId())+" type: "+order.getTypeName() + " total "+ Double.toString(order.getOrderTotal()) + " time: " + order.getCreatedTime().toString());
-        model.addRow(new String[]
-          {
-            Integer.toString(order.getId()),
-            order.getTypeName(),
-            Double.toString(order.getOrderTotal()),
-            order.getCreatedTime().toString()
-          }
-        );
-      }
-      for (Object row : model.getDataVector()) {
-        System.out.println("row: "+row);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+    for (OrderComponent order : data) {
+      model.addRow(new String[]
+        {
+          Integer.toString(order.getId()),
+          order.getTypeName(),
+          Double.toString(order.getOrderTotal()),
+          order.getCreatedTime().toString()
+        }
+      );
     }
-
     this.historyTable.repaint();
   }
 
   private void deleteAllTableElements(DefaultTableModel model) {
-    /*int rowCount = model.getRowCount();
-    System.out.println("clear selection");
-    for (int i = rowCount - 1; i >= 0; i--) {
-      model.removeRow(i);
-      System.out.println("Row "+i+" removed");
-    }*/
-    model.getDataVector().removeAllElements();
-    //model.fireTableDataChanged();
+    try {
+      model.getDataVector().removeAllElements();
+      model.fireTableDataChanged();
+    } catch (Exception e) {
+      // Handle exception
+    }
+  }
+
+  public void updateTableRow(OrderComponent order) {
+    this.objVisitor.getAllOrdersData();
+    historyTable.getModel().setValueAt(
+            Double.toString(order.getOrderTotal()),
+            historyTable.getSelectedRow(),
+            2
+    );
   }
 
   public void displayNewUI(JPanel uiObj) {
@@ -271,13 +259,9 @@ public class OrderManager extends JFrame {
     validate();
   }
 
-  public int getOrderId(){
-    return this.orderId;
-  }
   public void setOrderId(int id){
     this.orderId = id;
   }
-
 
   } // End of class OrderManager
 
@@ -294,21 +278,31 @@ class ClickHandler implements ListSelectionListener {
   public void valueChanged(ListSelectionEvent e) {
     double amntOrder;
     double taxOrder;
-    id = objOrderManager.getHistoryTable().getValueAt(objOrderManager.getHistoryTable().getSelectedRow(), 0).toString();
-    String orderType = objOrderManager.getHistoryTable().getValueAt(objOrderManager.getHistoryTable().getSelectedRow(), 1).toString();
-    int idValue = Integer.parseInt(id);
-    objOrderManager.setOrderId(idValue);
-    System.out.println(orderType + " amount: " + idValue);
+    double shOrder;
     try {
+      id = objOrderManager.getHistoryTable().getValueAt(objOrderManager.getHistoryTable().getSelectedRow(), 0).toString();
+      String orderType = objOrderManager.getHistoryTable().getValueAt(objOrderManager.getHistoryTable().getSelectedRow(), 1).toString();
+      int idValue = Integer.parseInt(id);
+      objOrderManager.setOrderId(idValue);
+
       amntOrder = objOrderManager.getOrderVisitor().getOrderSimple(idValue).getOrderAmount();
       taxOrder = objOrderManager.getOrderVisitor().getOrderSimple(idValue).getAdditionalTax();
+      shOrder = objOrderManager.getOrderVisitor().getOrderSimple(idValue).getAdditionalSH();
+
       String amnt = Double.toString(amntOrder);
       String tax = Double.toString(taxOrder);
+      String sh = Double.toString(shOrder);
+
       BuilderFactory factory = new BuilderFactory();
       builderBH = factory.getUIBuilder(orderType);
       DirectorUI director = new DirectorUI(builderBH);
       director.build();
-      director.setValues(amnt,tax); //Obtener amount y tax de las ordenes dentro del vector
+
+      if (shOrder > 0.0) {
+        director.setValues(amnt,sh); //Obtener amount y tax de las ordenes dentro del vector
+      } else {
+        director.setValues(amnt,tax); //Obtener amount y tax de las ordenes dentro del vector
+      }
       UIObj = builderBH.getPanel();
       JButton btnUpdate = new JButton("Update");
       btnUpdate.addActionListener(new java.awt.event.ActionListener() {
@@ -319,7 +313,7 @@ class ClickHandler implements ListSelectionListener {
       UIObj.add(btnUpdate);
       objOrderManager.displayNewUI(UIObj);
     } catch (Exception exception) {
-      System.out.println("No entra");
+      // Handle exception
     }
   }
 
@@ -331,18 +325,13 @@ class ClickHandler implements ListSelectionListener {
       OrderComponent orderUpdated = objOrderManager.getOrderVisitor().getOrderSimple(idValue);
       orderUpdated.setOrderAmount(getOrderAmount());
       orderUpdated.setAdditionalTax(getTaxValue());
-      /*orderUpdated.getOrderTotal();
-      System.out.println("nuevo valor de monto: " + orderUpdated.getOrderAmount());
-      System.out.println("nuevo valor de impuesto: " + orderUpdated.getAdditionalTax());
-      System.out.println("total orden simple: " + orderUpdated.getOrderTotal());*/
       objOrderManager.getOrderVisitor().editOrder(orderUpdated);
-      //objOrderManager.getHistoryTable().setFocusable(false);
-      objOrderManager.updateHistory();
+      objOrderManager.updateTableRow(orderUpdated);
       UIObj.removeAll();
       UIObj.validate();
       objOrderManager.validate();
     } catch (Exception e) {
-      System.err.println("Error en ClickHandler.btnUpdateShowActionPerformed():" + e.getMessage());
+      // Handle exception
     }
 
   }
@@ -377,6 +366,7 @@ class ButtonHandler implements ActionListener {
     if (e.getSource() == objOrderManager.getOrderTypeCtrl()) {
       String selection = objOrderManager.getOrderType();
       if (selection.equals("") == false) {
+        objOrderManager.getHistoryTable().clearSelection();
         BuilderFactory builderFactory = new BuilderFactory();
         builderBH = builderFactory.getUIBuilder(selection);
         //configure the director with the builder
@@ -417,7 +407,6 @@ class ButtonHandler implements ActionListener {
 
       //Create the order
       Order order = createOrder(orderType, dblOrderAmount, dblTax);
-      System.out.println("ordertype: "+orderType);
       //Get the Visitor
       visitor = objOrderManager.getOrderVisitor();
 

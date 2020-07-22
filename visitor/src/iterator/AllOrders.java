@@ -50,10 +50,9 @@ public class AllOrders implements Iterator<OrderComponent> {
      * @param orderId: the id of the order
      * @param newOrder: the new order that will be replacing the old order
      */
-    public void update(int orderId, OrderComponent newOrder) throws Exception {
+    public void updateOrder(int orderId, OrderComponent newOrder) throws Exception {
         for (int i = 0; i < this.orderColl.size(); i++) {
             if (this.orderColl.get(i).getId() == orderId) {
-                System.out.println("order updated: "+orderId);
                 this.orderColl.set(i, newOrder);
                 break;
             }
@@ -65,7 +64,6 @@ public class AllOrders implements Iterator<OrderComponent> {
         try {
             for (int i = 0; i < this.orderColl.size(); i++) {
                 if (this.orderColl.get(i).getId() == orderId) {
-                    //this.orderColl.set(i, newOrder);
                     oComp = orderColl.get(i);
                     break;
                 }
