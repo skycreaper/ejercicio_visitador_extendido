@@ -126,7 +126,6 @@ public class OrderManager extends JFrame {
     historyTable.getSelectionModel().addListSelectionListener(new ClickHandler(this));
 
     JScrollPane scrollPane = new JScrollPane(historyTable);
-    
 
     allOrdersPanel.add(lblHistoryTitle);
     allOrdersPanel.add(scrollPane);
@@ -225,11 +224,16 @@ public class OrderManager extends JFrame {
   }
 
   public void updateHistory() {
+    Vector<OrderComponent> data = null;
     try {
-      Vector<OrderComponent> data = this.objVisitor.getAllOrdersData();
-      this.deleteAllTableElements();
+      data = this.objVisitor.getAllOrdersData();
+      System.out.println("data in tabla size "+data.size());
       DefaultTableModel model = (DefaultTableModel) historyTable.getModel();
+      this.deleteAllTableElements(model);
+      System.out.println("Datos borrados");
+
       for (OrderComponent order : data) {
+        System.out.println("order: "+Integer.toString(order.getId())+" type: "+order.getTypeName() + " total "+ Double.toString(order.getOrderTotal()) + " time: " + order.getCreatedTime().toString());
         model.addRow(new String[]
           {
             Integer.toString(order.getId()),
@@ -239,18 +243,25 @@ public class OrderManager extends JFrame {
           }
         );
       }
+      for (Object row : model.getDataVector()) {
+        System.out.println("row: "+row);
+      }
     } catch (Exception e) {
-      //TODO: handle exception
+      e.printStackTrace();
     }
-    
+
+    this.historyTable.repaint();
   }
 
-  private void deleteAllTableElements() {
-    DefaultTableModel moedl = (DefaultTableModel) historyTable.getModel();
-    int rowCount = moedl.getRowCount();
+  private void deleteAllTableElements(DefaultTableModel model) {
+    /*int rowCount = model.getRowCount();
+    System.out.println("clear selection");
     for (int i = rowCount - 1; i >= 0; i--) {
-        moedl.removeRow(i);
-    }
+      model.removeRow(i);
+      System.out.println("Row "+i+" removed");
+    }*/
+    model.getDataVector().removeAllElements();
+    //model.fireTableDataChanged();
   }
 
   public void displayNewUI(JPanel uiObj) {
@@ -274,6 +285,7 @@ class ClickHandler implements ListSelectionListener {
   OrderManager objOrderManager;
   OrderBuilder builderBH;
   String id;
+  JPanel UIObj;
   public ClickHandler(OrderManager objOrderManager) {
     this.objOrderManager = objOrderManager;
   }
@@ -297,7 +309,7 @@ class ClickHandler implements ListSelectionListener {
       DirectorUI director = new DirectorUI(builderBH);
       director.build();
       director.setValues(amnt,tax); //Obtener amount y tax de las ordenes dentro del vector
-      JPanel UIObj = builderBH.getPanel();
+      UIObj = builderBH.getPanel();
       JButton btnUpdate = new JButton("Update");
       btnUpdate.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -310,20 +322,27 @@ class ClickHandler implements ListSelectionListener {
       System.out.println("No entra");
     }
   }
+
   public void btnUpdateShowActionPerformed(java.awt.event.ActionEvent evt) {
     try {
       int idValue = Integer.parseInt(id);
       getOrderAmount();
       getTaxValue();
-      objOrderManager.getOrderVisitor().getOrderSimple(idValue).setOrderAmount(getOrderAmount());
-      objOrderManager.getOrderVisitor().getOrderSimple(idValue).setAdditionalTax(getTaxValue());
-      objOrderManager.getOrderVisitor().getOrderSimple(idValue).getOrderTotal();
-      System.out.println("nuevo valor de monto: " + objOrderManager.getOrderVisitor().getOrderSimple(idValue).getOrderAmount());
-      System.out.println("nuevo valor de impuesto: " + objOrderManager.getOrderVisitor().getOrderSimple(idValue).getAdditionalTax());
-      System.out.println("total orden simple: " + objOrderManager.getOrderVisitor().getOrderSimple(idValue).getOrderTotal());
+      OrderComponent orderUpdated = objOrderManager.getOrderVisitor().getOrderSimple(idValue);
+      orderUpdated.setOrderAmount(getOrderAmount());
+      orderUpdated.setAdditionalTax(getTaxValue());
+      /*orderUpdated.getOrderTotal();
+      System.out.println("nuevo valor de monto: " + orderUpdated.getOrderAmount());
+      System.out.println("nuevo valor de impuesto: " + orderUpdated.getAdditionalTax());
+      System.out.println("total orden simple: " + orderUpdated.getOrderTotal());*/
+      objOrderManager.getOrderVisitor().editOrder(orderUpdated);
+      //objOrderManager.getHistoryTable().setFocusable(false);
       objOrderManager.updateHistory();
+      UIObj.removeAll();
+      UIObj.validate();
+      objOrderManager.validate();
     } catch (Exception e) {
-      System.out.println("la madre pa todos");
+      System.err.println("Error en ClickHandler.btnUpdateShowActionPerformed():" + e.getMessage());
     }
 
   }

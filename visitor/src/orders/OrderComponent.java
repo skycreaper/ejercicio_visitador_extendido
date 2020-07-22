@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 
 public abstract class OrderComponent {
     
-    public int getId() throws Exception {
-        throw new Exception("No id ");
+    public int getId() {
+        return -1;
     }
 
     public String getTypeName() {

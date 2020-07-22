@@ -15,29 +15,30 @@ public class OrderVisitor extends OrderComponent implements VisitorInterface {
 
   private AllOrders orders;
   private double orderTotal;
+  Vector<OrderComponent> data;
 
   public OrderVisitor() {
-    orders = new AllOrders();
+    data = new Vector<OrderComponent>();
   }
 
   @Override
   public void visit(NonCaliforniaOrder inp_order) {
-    orders.addOrder(inp_order);
+    data.add(inp_order);
   }
 
   @Override
   public void visit(CaliforniaOrder inp_order) {
-    orders.addOrder(inp_order);
+    data.add(inp_order);
   }
 
   @Override
   public void visit(OverseasOrder inp_order) {
-    orders.addOrder(inp_order);
+    data.add(inp_order);
   }
 
   @Override
   public void visit(ColombianOrder inp_order) {
-    orders.addOrder(inp_order);
+    data.add(inp_order);
   }
 
   @Override
@@ -55,18 +56,14 @@ public class OrderVisitor extends OrderComponent implements VisitorInterface {
 
   public Vector<OrderComponent> getAllOrdersData() {
     orderTotal = 0.0;
-    Vector<OrderComponent> data = new Vector<OrderComponent>();
+    orders = new AllOrders(this.data);
     while (orders.hasNext()) {
       OrderComponent tempOrder = orders.next();
+      System.out.println("hasNext, idOrder: "+tempOrder.getId()+" total: "+tempOrder.getOrderTotal());
       orderTotal += tempOrder.getOrderTotal();
-        /*String[] row = {
-          Integer.toString(tempOrder.getId()),
-          Double.toString(tempOrder.getOrderTotal()),
-          tempOrder.getCreatedTime().toString()
-      };*/
-      data.add(tempOrder);
     }
-    return data;
+    System.out.println("data lenght: "+data.size());
+    return this.data;
   }
 
   /**
@@ -89,5 +86,14 @@ public class OrderVisitor extends OrderComponent implements VisitorInterface {
   }
   public OrderComponent getOrderSimple(int idOrden) throws Exception {
     return orders.getOrder(idOrden);
+  }
+
+  public void updateOrder(OrderComponent order) {
+    try {
+      orders.update(order.getId(), order);
+    } catch (Exception e) {
+
+    }
+    
   }
 }

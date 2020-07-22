@@ -13,12 +13,8 @@ public class AllOrders implements Iterator<OrderComponent> {
     Enumeration<OrderComponent> enumerationOrders;
     OrderComponent nextOrder;
 
-    public AllOrders() {
-        this.orderColl = new Vector<OrderComponent>();
-    }
-
-    public void addOrder(OrderComponent order) {
-        orderColl.add(order);
+    public AllOrders(Vector<OrderComponent> data) {
+        this.orderColl = data;
         enumerationOrders = orderColl.elements();
     }
 
@@ -57,7 +53,9 @@ public class AllOrders implements Iterator<OrderComponent> {
     public void update(int orderId, OrderComponent newOrder) throws Exception {
         for (int i = 0; i < this.orderColl.size(); i++) {
             if (this.orderColl.get(i).getId() == orderId) {
+                System.out.println("order updated: "+orderId);
                 this.orderColl.set(i, newOrder);
+                break;
             }
         }
     }
